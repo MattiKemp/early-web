@@ -48,10 +48,10 @@ const Login = ({ onSignIn, onSignUp }) => {
     return (
         <div>
             <form className='add-form' onSubmit={onSubmit}>
-                {<div className='form-control'>
+                <div className='form-control'>
                     <label>Username</label>
                     <input type='text' placeholder='Username' value={user} onChange={(e) => setUser(e.target.value)}/>
-                </div>}
+                </div>
                 <div className='form-control'>
                     <label>Password</label>
                     <input type='text' placeholder='Password' value={pass} onChange={(e) => setPass(e.target.value)}/>

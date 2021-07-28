@@ -11,6 +11,16 @@ body {
 }
 
 .container {
+  /* max-width: 500px;
+  margin: 30px auto; */
+  overflow: auto;
+  /* min-height: 300px; */
+  /* border: 1px solid steelblue; */
+  /* padding: 30px;
+  border-radius: 5px; */
+}
+
+.main-content {
   max-width: 500px;
   margin: 30px auto;
   overflow: auto;
@@ -19,6 +29,7 @@ body {
   padding: 30px;
   border-radius: 5px;
 }
+
 
 .header {
   display: flex;
@@ -155,5 +166,60 @@ footer {
 
 .tbtn-block {
   display: block;
+  width: 100%;
+}
+
+.user{
+  display: inline-flex;
+  /* text-align: unset; */
+  width: 100vw;
+  margin: 0px auto;
+  overflow: auto;
+  min-height: 0px;
+  /* border: 1px solid steelblue; */
+  padding: 0px;
+  border-radius: 0px;
+}
+
+.settings-bar{
+  width: 10vw;
+}
+
+.sbtn {
+  display: inline-flex;
+  background: white;
+  color: black;
+  border: none;
+  padding: 10px 20px;
+  margin: 0px;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 15px;
+  font-family: inherit;
+  width: 100px;
+  border: 2px;
+  border-color: black;
+  border-width: 1px;
+  border-style: solid;
+  height: 50px;
+}
+
+.sbtn:focus {
+  outline: none;
+}
+
+.sbtn:active {
+  transform: scale(0.98);
+  background: #f0f0f0;
+}
+
+.sbtn-block {
+  display: block;
+  width: 100%;
+}
+
+.profile-content{
+  margin: 5%;
   width: 100%;
 }
