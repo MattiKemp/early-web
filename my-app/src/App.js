@@ -7,6 +7,7 @@ import AddTask from './components/AddTask'
 import Login from './components/Login'
 import MyProfile from './components/MyProfile'
 import { isCompositeComponent } from 'react-dom/cjs/react-dom-test-utils.production.min'
+import DisplayPost from './components/DisplayPost'
 
 
 function App() {
@@ -20,11 +21,9 @@ function App() {
   const [page, setPage] = useState(-1)
   //const [signedIn, setSignedIn] = useState(false)
   const [fetchFollowContent, setfetchFollowContent] = useState(false)
-  // useEffect(() =>  {
-  //   async function fetchContent(){
-  //   }
-  //   fetchContent();
-  // })
+  // viewing posts
+  const [postSelected, setPostSelected] = useState(false)
+  const [selectedPostContent, setSelectedPostContent] = useState({data:"", profile:""})
 
   // Add Task
   const addTask = (task, group) => {
@@ -37,7 +36,6 @@ function App() {
       setETasks([...eTasks, newTask])
     }
   }
-
 
   // Delete Task
   const deleteTask = (id, group) => {
@@ -64,6 +62,11 @@ function App() {
       setETasks(eTasks.map((task) => 
       task.id === id ? { ...task, reminder: !task.reminder } : task))
     }
+  }
+
+  const changeSelect = (postData) => {
+    setSelectedPostContent(postData)
+    setPostSelected(true)
   }
 
   const changePage = (pageId) => {
@@ -190,67 +193,76 @@ function App() {
       //console.log(content)
       var newTasks = fTasks
       if(content !== null){
+        // console.log(content);
         for(var i = 0; i < content.length; i++){
-          await newTasks.push({reminder:false, ...content[i], id: i + fTasksBottom, group: 0});
+          newTasks.push({reminder:false, ...content[i], id: i + fTasksBottom, group: 0});
         }
         await setFTasks(newTasks);
-        await setFTasksBottom(fTasksBottom + content.length)
+        setFTasksBottom(fTasksBottom + content.length)
       }
-      setfetchFollowContent(false);
+      // setfetchFollowContent(false);
     }
   }
 
+
   useEffect(() => {
-    console.log("updated");
+    // console.log("updated");
     if(fetchFollowContent){
       fetchContentFollowing(10);
       setfetchFollowContent(false);
     }
   });
 
+
+
   return (
     <div className="container">
-      {page < 3 && <div className="main-content">
-      {page === -1 && <div className="login">
-        <Login onSignIn={onSignIn} onSignUp={onSignUp}/>
-      </div>}
-      {page === 0 && <div className="content">
-        {/* {loginTest && fetchContentFollowing(10) && setLoginTest(false)} */}
-        <Header title={creds[0]} onAdd={() => setShowAddTask(!showAddTask)} showAddTask={showAddTask}/>
-        {showAddTask && <AddTask onAdd={addTask}/>}
-        {(fTasks.length > 0 ? <Tasks tasks={fTasks} onDelete={deleteTask} onToggle={toggleReminder}/>
-        : 'No content to show!')}
-      </div>}
-      {page === 1 && <div className="explore">
-        {/* make a search component :P, just for looks atm. */}
-        <div className='form-control'>
-          <input type='text' placeholder='Search'/>
+      {!postSelected && <div>
+        {page < 3 && <div className="main-content">
+        {page === -1 && <div className="login">
+          <Login onSignIn={onSignIn} onSignUp={onSignUp}/>
+        </div>}
+        {page === 0 && <div className="content">
+          {/* {loginTest && fetchContentFollowing(10) && setLoginTest(false)} */}
+          <Header title={creds[0]} onAdd={() => setShowAddTask(!showAddTask)} showAddTask={showAddTask}/>
+          {showAddTask && <AddTask onAdd={addTask}/>}
+          {(fTasks.length > 0 ? <Tasks tasks={fTasks} onDelete={deleteTask} onToggle={toggleReminder} onPostSelected={changeSelect}/>
+          : 'No content to show!')}
+        </div>}
+        {page === 1 && <div className="explore">
+          {/* make a search component :P, just for looks atm. */}
+          <div className='form-control'>
+            <input type='text' placeholder='Search'/>
+          </div>
+          <input className='btn btn-block' type='submit' value='Search' />
+          {(eTasks.length > 0 ? <Tasks tasks={eTasks} onDelete={deleteTask} onToggle={toggleReminder} onPostSelected={changeSelect}/>
+          : 'No Tasks to Show')}
+        </div>}
+        {page === 2 && <div className="groups">
+    
+        </div>}
+        </div>}
+        {page === 3 && <div className="user">
+          <div className="settings-bar">
+            <SettingsButton text={"Profile"} onClick={() => {}}/>
+            <SettingsButton text={"Following"} onClick={() => {}}/>
+            <SettingsButton text={"Saved"} onClick={() => {}}/>
+            <SettingsButton text={"Premium"} onClick={() => {}}/>
+            <SettingsButton text={"Settings"} onClick={() => {}}/>
+          </div>
+          <div>
+            <MyProfile />
+          </div>
+        </div>}
+        <div className="taskbar">
+          {page > -1 && <TaskbarButton text={"Home"} id={0} onClick={changePage} contentLoad={() => {}}/>}
+          {page > -1 && <TaskbarButton text={"Explore"} id={1} onClick={changePage} contentLoad={fetchContentAll}/>}
+          {page > -1 && <TaskbarButton text={"Groups"} id={2} onClick={changePage} contentLoad={()=>{}}/>}
+          {page > -1 && <TaskbarButton text={"Me"} id={3} onClick={changePage} contentLoad={()=>{}}/>}
         </div>
-        <input className='btn btn-block' type='submit' value='Search' />
-        {(eTasks.length > 0 ? <Tasks tasks={eTasks} onDelete={deleteTask} onToggle={toggleReminder}/>
-        : 'No Tasks to Show')}
       </div>}
-      {page === 2 && <div className="groups">
-   
-      </div>}
-      </div>}
-      {page === 3 && <div className="user">
-        <div className="settings-bar">
-          <SettingsButton text={"Profile"} onClick={() => {}}/>
-          <SettingsButton text={"Following"} onClick={() => {}}/>
-          <SettingsButton text={"Saved"} onClick={() => {}}/>
-          <SettingsButton text={"Premium"} onClick={() => {}}/>
-          <SettingsButton text={"Settings"} onClick={() => {}}/>
-        </div>
-        <div>
-          <MyProfile />
-        </div>
-      </div>} 
-      <div className="taskbar">
-        {page > -1 && <TaskbarButton text={"Home"} id={0} onClick={changePage} contentLoad={() => {}}/>}
-        {page > -1 && <TaskbarButton text={"Explore"} id={1} onClick={changePage} contentLoad={fetchContentAll}/>}
-        {page > -1 && <TaskbarButton text={"Groups"} id={2} onClick={changePage} contentLoad={()=>{}}/>}
-        {page > -1 && <TaskbarButton text={"Me"} id={3} onClick={changePage} contentLoad={()=>{}}/>}
+      <div>
+        <DisplayPost content={selectedPostContent} back={setPostSelected} select={postSelected}/>
       </div>
     </div>
   );
