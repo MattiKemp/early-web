@@ -8,14 +8,13 @@ import Login from './components/Login'
 import MyProfile from './components/MyProfile'
 import { isCompositeComponent } from 'react-dom/cjs/react-dom-test-utils.production.min'
 import DisplayPost from './components/DisplayPost'
-
+import Saved from './components/Saved'
 
 function App() {
   const [creds, setCreds] = useState(["",""]);
   const [showAddTask, setShowAddTask] = useState(false)
   const [fTasks, setFTasks] = useState([])
   const [fTasksBottom, setFTasksBottom] = useState(0)
-  //const [showAddTask, setShowAddTask] = useState(false)
   const [eTasks, setETasks] = useState([])
   const [eTasksBottom, setETasksBottom] = useState(0)
   const [page, setPage] = useState(-1)
@@ -24,6 +23,8 @@ function App() {
   // viewing posts
   const [postSelected, setPostSelected] = useState(false)
   const [selectedPostContent, setSelectedPostContent] = useState({data:"", profile:""})
+  //profile states for profile, following, saved, premium, and settings content visibility.
+  const [profileStates, setProfileStates] = useState([true, false, false, false, false])
 
   // Add Task
   const addTask = (task, group) => {
@@ -128,8 +129,6 @@ function App() {
     const content = await response.json();
     if(content.valid === "YES"){
       console.log("welcome!");
-      //await setCreds([credentials[0], credentials[1]]);
-      //changePage(0);
       return true;
     }
     else{
@@ -161,14 +160,12 @@ function App() {
       };
       const response = await fetch("https://10.0.0.5:8000/content-all/",otherParam)
       const content = await response.json();
-      //console.log(content)
       var newTasks = eTasks
       for(var i = 0; i < content.length; i++){
         await newTasks.push({reminder:false, ...content[i], id: i + eTasksBottom, group: 1});
       }
       await setETasks(newTasks);
       await setETasksBottom(eTasksBottom + content.length)
-      //console.log(eTasksBottom)
     }
   }
 
@@ -213,7 +210,12 @@ function App() {
     }
   });
 
-
+  //profile content visibilty
+  const changeProfileVars = (id) => {
+    var newStates = [false, false, false, false, false]
+    newStates[id] = true
+    setProfileStates(newStates)
+  }
 
   return (
     <div className="container">
@@ -244,14 +246,15 @@ function App() {
         </div>}
         {page === 3 && <div className="user">
           <div className="settings-bar">
-            <SettingsButton text={"Profile"} onClick={() => {}}/>
-            <SettingsButton text={"Following"} onClick={() => {}}/>
-            <SettingsButton text={"Saved"} onClick={() => {}}/>
-            <SettingsButton text={"Premium"} onClick={() => {}}/>
-            <SettingsButton text={"Settings"} onClick={() => {}}/>
+            <SettingsButton text={"Profile"} onClick={() => {changeProfileVars(0)}}/>
+            <SettingsButton text={"Following"} onClick={() => {changeProfileVars(1)}}/>
+            <SettingsButton text={"Saved"} onClick={() => {changeProfileVars(2)}}/>
+            <SettingsButton text={"Premium"} onClick={() => {changeProfileVars(3)}}/>
+            <SettingsButton text={"Settings"} onClick={() => {changeProfileVars(4)}}/>
           </div>
           <div>
-            <MyProfile />
+            <MyProfile select={profileStates[0]} creds={creds}/>
+            <Saved select={profileStates[2]} creds={creds} onPostSelected={changeSelect}/>
           </div>
         </div>}
         <div className="taskbar">

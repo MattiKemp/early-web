@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import Button from './Button'
 import ReactDOM from 'react-dom';
 import StreamVid from './StreamVid'
+import Image from './Image'
+
 
 const DisplayPost = ({ content, back, select }) => {
     // const [selected, setSelected] = useState(false)
@@ -34,6 +36,10 @@ const DisplayPost = ({ content, back, select }) => {
                     const vidElement= <StreamVid url={lines[i].substr(3,lines[i].length-6)} />;
                     newElements.push(vidElement)
                 }
+                else if(lines[i].charAt(1)==="i"){
+                    const imgElement= <Image source={'https://10.0.0.5:8001/media/images/' + lines[i].substr(3,lines[i].length-6)} />;
+                    newElements.push(imgElement)
+                }
             }
 
             // look into react dom rendering and react elements
@@ -47,20 +53,20 @@ const DisplayPost = ({ content, back, select }) => {
         }
         else{
             var mainDiv = document.getElementsByClassName("post-content")[0];
-            var vidCount = 0
+            var rContentCount = 0
             for(var i = 0; i < elements.length; i++){
                 if(elements[i] instanceof HTMLElement){
                     mainDiv.appendChild(elements[i])
                 }
                 else{
                     var divElement = document.createElement("div");
-                    divElement.className = "hls-video"
+                    divElement.className = "react-content"
                     mainDiv.appendChild(divElement)
                     ReactDOM.render(
                         elements[i],
-                        document.getElementsByClassName("hls-video")[vidCount]
+                        document.getElementsByClassName("react-content")[rContentCount]
                       );
-                      vidCount++;
+                      rContentCount++;
                 }
             }
         }
