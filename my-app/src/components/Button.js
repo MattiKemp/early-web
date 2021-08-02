@@ -1,5 +1,10 @@
 import PropTypes from 'prop-types'
 
+// General Button Component
+// takes properties:
+// color: color of button
+// text: text to be displayed
+// onClick: function to be called when the button is clicked
 const Button = ({ color, text, onClick }) => {
 
     return (

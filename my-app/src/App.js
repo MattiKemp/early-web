@@ -1,84 +1,101 @@
 import Header from './components/Header'
-import Tasks from './components/Tasks'
+import Posts from './components/Posts'
 import TaskbarButton from './components/TaskbarButton'
 import SettingsButton from './components/SettingsButton'
 import { useState, useEffect } from 'react'
 import AddTask from './components/AddTask'
 import Login from './components/Login'
 import MyProfile from './components/MyProfile'
-import { isCompositeComponent } from 'react-dom/cjs/react-dom-test-utils.production.min'
 import DisplayPost from './components/DisplayPost'
 import Saved from './components/Saved'
 import Following from './components/Following'
 
 function App() {
+  // credentials for the user
   // idea: have some kind of verifaction system for every call to the api. Obviously don't include the password
   // every time lol. Give them some kind of key.
   const [creds, setCreds] = useState(["",""]);
+  // whether addTask should be displayed
   const [showAddTask, setShowAddTask] = useState(false)
-  const [fTasks, setFTasks] = useState([])
-  const [fTasksBottom, setFTasksBottom] = useState(0)
-  const [eTasks, setETasks] = useState([])
-  const [eTasksBottom, setETasksBottom] = useState(0)
+  // the saved home page content
+  const [fPosts, setFPosts] = useState([])
+  // value based on the previous number of home page content, used to give each post a unique local id
+  const [fPostsBottom, setFPostsBottom] = useState(0)
+  // the saved explore page content
+  const [ePosts, setEPosts] = useState([])
+  // value based on the previous number of explore page content, used to give each post a unique local id
+  const [ePostsBottom, setEPostsBottom] = useState(0)
+  // the current page displayed
   const [page, setPage] = useState(-1)
   //const [signedIn, setSignedIn] = useState(false)
+  // whether home page content should be fetched
   const [fetchFollowContent, setfetchFollowContent] = useState(false)
   // viewing posts
   const [postSelected, setPostSelected] = useState(false)
+  // the content of the post selected by the user
   const [selectedPostContent, setSelectedPostContent] = useState({data:"", profile:""})
   //profile states for profile, following, saved, premium, and settings content visibility.
   const [profileStates, setProfileStates] = useState([true, false, false, false, false])
+  // ids of posts the user has saved
   const [savedIds, setSavedIds] = useState(new Set())
+  // whether the user saved posts ids should be fetched
   const [savedIdsFetched, setSavedIdsFetched] = useState(true)
 
-  // Add Task
-  const addTask = (task, group) => {
+  // Add Task, this is to add a new post, but isn't really setup or named properly.
+  const addPost = (task, group) => {
     const id = Math.floor(Math.random() * 10000) + 1
-    const newTask = { id, ...task }
+    const newPost = { id, ...task }
     if(group === 0){
-      setFTasks([...fTasks, newTask])
+      setFPosts([...fPosts, newPost])
     }
     else if(group === 1){
-      setETasks([...eTasks, newTask])
+      setEPosts([...ePosts, newPost])
     }
   }
 
-  // Delete Task
-  const deleteTask = (id, group) => {
+  // Delete Task, not really used atm
+  const deletePost = (id, group) => {
     if(group === 0){
-      setFTasks(fTasks.filter((task) => task.id !==id))
+      setFPosts(fPosts.filter((post) => post.id !==id))
     }
     else if(group === 1){
-      setETasks(eTasks.filter((task) => task.id !==id))
+      setEPosts(ePosts.filter((post) => post.id !==id))
     }
   }
-
-  const clearTask = () => {
-    setFTasks([])
-    setETasks([]);
+  
+  // not really used atm
+  const clearPosts = () => {
+    setFPosts([])
+    setEPosts([]);
   }
 
-  // Toggle Reminder
+  // Toggle Reminder, not really used atm. Will probably delete this later
   const toggleReminder = (id, group) => {
     if(group === 0){
-      setFTasks(fTasks.map((task) => 
-      task.id === id ? { ...task, reminder: !task.reminder } : task))
+      setFPosts(fPosts.map((post) => 
+      post.id === id ? { ...post, reminder: !post.reminder } : post))
     }
     else if(group === 1){
-      setETasks(eTasks.map((task) => 
-      task.id === id ? { ...task, reminder: !task.reminder } : task))
+      setEPosts(ePosts.map((post) => 
+      post.id === id ? { ...post, reminder: !post.reminder } : post))
     }
   }
 
+  // function to view a selected posts content.
+  // Takes post data of selected post.
   const changeSelect = (postData) => {
     setSelectedPostContent(postData)
     setPostSelected(true)
   }
 
+  // function to change the current displayed page. 
+  // Takes page ids: Login:-1, Home:0, Explore:1, Groups:2, Me:3
   const changePage = (pageId) => {
     setPage(pageId);
   }
 
+  // function to validate user credentials with the server when signing in.
+  // see backend comments for more info on specific endpoint details.
   const onSignIn = async (credentials) => {
     const Data={
       user: credentials[0],
@@ -98,21 +115,21 @@ function App() {
     if(content.valid === "YES"){
       console.log("welcome!");
       await setCreds([credentials[0], credentials[1]]);
-      //console.log(creds);
       await setfetchFollowContent(true);
       changePage(0);
-      //fetchContentFollowing(10);
       return true;
     }
     else{
       console.log('invalid credentials')
-      //await setCreds(['','']);
       return false;
     }
   }
 
-  //need to put in checks on the backend for invalid inputs, someone could fake a request from outside our website
-  //which would mean they could put whatever they wanted into inputs.
+  // need to put in checks on the backend for invalid inputs, someone could fake a request from outside our website
+  // which would mean they could put whatever they wanted into inputs.
+  // function called when a user makes a signup request, this currently isn't setup on the backend.
+  // *note: this and signIn may be moved into the Login component in the future.
+  // see backend comments for more info on specific endpoint details.
   const onSignUp = async (credentials) => {
     const Data={
       user: credentials[0],
@@ -138,13 +155,13 @@ function App() {
     }
     else{
       console.log('invalid credentials')
-      //await setCreds(['','']);
       return false;
     }
   }
 
+  // function to get currently saved post ids for the user.
+  // see backend comments for more info on specific endpoint details.
   async function fetchSaved(){
-      // console.log('fetching saved content');
       const Data={
         user: creds[0]
       }
@@ -159,7 +176,6 @@ function App() {
       };
       const response = await fetch("https://10.0.0.5:8000/saved/",otherParam)
       const content = await response.json();
-      //console.log(content)
       var newSaved = new Set();
       var newIDs = content.result.split(",")
       for(var i = 0; i < newIDs.length; i++){
@@ -168,10 +184,11 @@ function App() {
       setSavedIds(newSaved)
   }
 
+  // function to get explore page content.
+  // see backend comments for more info on specific endpoint details.
   // later on this will be somewhat tailored to the user, like what instagram does.
   async function fetchContentAll(amount){
-    if(eTasks.length === 0 || amount > 0){
-      // console.log('fetching explore content');
+    if(ePosts.length === 0 || amount > 0){
       const Data={
         depth: amount
       }
@@ -186,18 +203,19 @@ function App() {
       };
       const response = await fetch("https://10.0.0.5:8000/content-all/",otherParam)
       const content = await response.json();
-      var newTasks = eTasks
+      var newPosts = ePosts
       for(var i = 0; i < content.length; i++){
-        await newTasks.push({reminder:false, ...content[i], localId: i + eTasksBottom, group: 1});
+        await newPosts.push({reminder:false, ...content[i], localId: i + ePostsBottom, group: 1});
       }
-      await setETasks(newTasks);
-      await setETasksBottom(eTasksBottom + content.length)
+      await setEPosts(newPosts);
+      await setEPostsBottom(ePostsBottom + content.length)
     }
   }
 
+  // function to get home page content.
+  // see backend comments for more info on specific endpoint details.
   async function fetchContentFollowing(amount){
-    if(fTasks.length === 0 || amount > 0){
-      // console.log('fetching follow content');
+    if(fPosts.length === 0 || amount > 0){
       const Data={
         user: creds[0],
         depth: amount
@@ -213,22 +231,20 @@ function App() {
       };
       const response = await fetch("https://10.0.0.5:8000/content-following/",otherParam)
       const content = await response.json();
-      //console.log(content)
-      var newTasks = fTasks
+      var newPosts = fPosts
       if(content !== null){
-        // console.log(content);
         for(var i = 0; i < content.length; i++){
-          newTasks.push({reminder:false, ...content[i], localId: i + fTasksBottom, group: 0});
+          newPosts.push({reminder:false, ...content[i], localId: i + fPostsBottom, group: 0});
         }
-        await setFTasks(newTasks);
-        setFTasksBottom(fTasksBottom + content.length)
+        await setFPosts(newPosts);
+        setFPostsBottom(fPostsBottom + content.length)
       }
-      // setfetchFollowContent(false);
     }
   }
 
+  // function to change whether a post is saved for this user.
+  // see backend comments for more info on specific endpoint details.
   async function setSaved(id){
-      // console.log('fetching saved content');
       const Data={
         user: creds[0],
         id: id
@@ -244,7 +260,6 @@ function App() {
       };
       const response = await fetch("https://10.0.0.5:8000/saved-set/",otherParam)
       const content = await response.json();
-      // console.log(content)
       var newSaved = new Set();
       var newIDs = content.result.split(",")
       for(var i = 0; i < newIDs.length; i++){
@@ -253,8 +268,8 @@ function App() {
       setSavedIds(newSaved)
   }
 
+  // if page update
   useEffect(() => {
-    // console.log("updated");
     if(fetchFollowContent){
       fetchContentFollowing(10);
       setfetchFollowContent(false);
@@ -265,7 +280,7 @@ function App() {
     }
   });
 
-  //profile content visibilty
+  // profile content visibilty
   const changeProfileVars = (id) => {
     var newStates = [false, false, false, false, false]
     newStates[id] = true
@@ -282,8 +297,8 @@ function App() {
         {page === 0 && <div className="content">
           {/* {loginTest && fetchContentFollowing(10) && setLoginTest(false)} */}
           <Header title={creds[0]} onAdd={() => setShowAddTask(!showAddTask)} showAddTask={showAddTask}/>
-          {showAddTask && <AddTask onAdd={addTask}/>}
-          {(fTasks.length > 0 ? <Tasks tasks={fTasks} onDelete={deleteTask} onToggle={toggleReminder} onPostSelected={changeSelect} saved={savedIds} onSave={setSaved}/>
+          {showAddTask && <AddTask onAdd={addPost}/>}
+          {(fPosts.length > 0 ? <Posts posts={fPosts} onDelete={deletePost} onToggle={toggleReminder} onPostSelected={changeSelect} saved={savedIds} onSave={setSaved}/>
           : 'No content to show!')}
         </div>}
         {page === 1 && <div className="explore">
@@ -292,8 +307,8 @@ function App() {
             <input type='text' placeholder='Search'/>
           </div>
           <input className='btn btn-block' type='submit' value='Search' />
-          {(eTasks.length > 0 ? <Tasks tasks={eTasks} onDelete={deleteTask} onToggle={toggleReminder} onPostSelected={changeSelect} saved={savedIds} onSave={setSaved}/>
-          : 'No Tasks to Show')}
+          {(ePosts.length > 0 ? <Posts posts={ePosts} onDelete={deletePost} onToggle={toggleReminder} onPostSelected={changeSelect} saved={savedIds} onSave={setSaved}/>
+          : 'No content to Show!')}
         </div>}
         {page === 2 && <div className="groups">
     

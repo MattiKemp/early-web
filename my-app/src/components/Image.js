@@ -1,6 +1,10 @@
 import React, {Suspense} from 'react'
 import {useImage} from 'react-image'
  
+// component used for displaying React images.
+// Properties:
+// source: the link to the image (string)
+// profileStyle: what style the image should be displayed with (int) 
 const Image = ({source, profileStyle}) => {
   const {src} = useImage({
     srcList: source,

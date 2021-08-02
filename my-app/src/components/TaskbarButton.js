@@ -1,5 +1,12 @@
 import PropTypes from 'prop-types'
 
+// Component for the taskbar buttons
+// properties:
+// color: color of button
+// text: text to be displayed by button
+// onClick: function to call when button is clicked
+// id: the id of the button (int)
+// contentLoad: 
 const TaskbarButton = ({ color, text, onClick, id, contentLoad}) => {
 
     const onEdit = () => {

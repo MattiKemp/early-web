@@ -1,8 +1,10 @@
 import { FaTimes, FaTrashAlt } from 'react-icons/fa'
 import Hls from 'hls.js';
-
 import ReactHlsPlayer from 'react-hls-player';
 
+// Component for streaming hls videos
+// Properties:
+// url: the url of the stream
 const StreamVid = ({ url, onStream }) => {
     const embedVideo = (url) => {
         var video = document.getElementsByClassName('vid');

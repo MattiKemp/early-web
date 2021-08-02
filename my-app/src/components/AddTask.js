@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+// this will likely be changed drastically in the future, just ignore it for now.
 const AddTask = ({ onAdd }) => {
     const [text, setText] = useState('')
     const [day, setDay] = useState('')
