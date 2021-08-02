@@ -2,7 +2,9 @@ import { FaTimes, FaTrashAlt } from 'react-icons/fa'
 import Image from './Image'
 
 
-
+// Component used for profiles
+// Properties:
+// profile: user profile info (profile object)
 const Profile = ({ profile }) => {
 
     return (

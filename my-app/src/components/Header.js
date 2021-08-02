@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import Button from './Button'
 
+// not really used, will probably remove later
 const Header = ({ title, onAdd, showAddTask }) => {
 
     return (

@@ -1,6 +1,11 @@
 import { useState } from 'react'
 import Button from './Button'
 
+// Component for the login page
+// Properties:
+// onSignIn: function to call when the user attempts to login
+// onSignUp: function to call when the user attempts to signup
+// this function may have a lot of work done on in the future so its comments are sparse atm.
 const Login = ({ onSignIn, onSignUp }) => {
     const [user, setUser] = useState('')
     const [pass, setPass] = useState('')

@@ -5,14 +5,20 @@ import ReactDOM from 'react-dom';
 import StreamVid from './StreamVid'
 import Image from './Image'
 
-
+// Component for displaying the content within a post
+// Properties:
+// content: content to be displayed (post)
+// back: function to be called when the back button is selected
+// select: whether any post is currently selected (boolean)
 const DisplayPost = ({ content, back, select }) => {
-    // const [selected, setSelected] = useState(false)
+    // the DOM/React elements of the content
     const [elements, setElements] = useState([])
+    // whether the content is loaded (not really used atm)
     const [isLoaded, setIsLoaded] = useState(false)
+    // previous content data (not really used atm)
     const [prevData, setPrevData] = useState({})
-    //const body = React.createElement('p', {}, 'Lorem ipsum dolor sit amet');
-    //idk if this is the best way to do this :/
+    // function to load the selected content properly
+    // idk if this is the best way to do this :/
     const loadPost = (reset) => {
         if(reset){
             // console.log("parsing dynamic content");
@@ -72,11 +78,10 @@ const DisplayPost = ({ content, back, select }) => {
         }
     }
 
+
     useEffect(() => {
         if(select === true){
-
             if(prevData.data != content.data){
-                // console.log('data changed')
                 loadPost(true)
             }
             else{
