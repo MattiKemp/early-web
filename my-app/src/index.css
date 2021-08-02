@@ -223,3 +223,24 @@ footer {
   margin: 5%;
   width: 100%;
 }
+
+.following-content{
+  margin: 5%;
+  width: 100%;
+}
+
+.profile-pic-small{
+  width: 100px;
+}
+
+.profile-collapsed{
+  width: 100%;
+  background: #f4f4f4;
+  margin: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.thumbnail-pic{
+  width:100%;
+}

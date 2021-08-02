@@ -15,7 +15,7 @@ const DisplayPost = ({ content, back, select }) => {
     //idk if this is the best way to do this :/
     const loadPost = (reset) => {
         if(reset){
-            console.log("parsing dynamic content");
+            // console.log("parsing dynamic content");
             var newElements = []
             var mainDiv = document.getElementsByClassName("post-content")[0];
             //var test = document.createElement("p");

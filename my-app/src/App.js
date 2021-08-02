@@ -9,8 +9,11 @@ import MyProfile from './components/MyProfile'
 import { isCompositeComponent } from 'react-dom/cjs/react-dom-test-utils.production.min'
 import DisplayPost from './components/DisplayPost'
 import Saved from './components/Saved'
+import Following from './components/Following'
 
 function App() {
+  // idea: have some kind of verifaction system for every call to the api. Obviously don't include the password
+  // every time lol. Give them some kind of key.
   const [creds, setCreds] = useState(["",""]);
   const [showAddTask, setShowAddTask] = useState(false)
   const [fTasks, setFTasks] = useState([])
@@ -25,6 +28,8 @@ function App() {
   const [selectedPostContent, setSelectedPostContent] = useState({data:"", profile:""})
   //profile states for profile, following, saved, premium, and settings content visibility.
   const [profileStates, setProfileStates] = useState([true, false, false, false, false])
+  const [savedIds, setSavedIds] = useState(new Set())
+  const [savedIdsFetched, setSavedIdsFetched] = useState(true)
 
   // Add Task
   const addTask = (task, group) => {
@@ -138,14 +143,35 @@ function App() {
     }
   }
 
-  // login
-  // idea: have some kind of verifaction system for every call to the api. Obviously don't include the password
-  // every time lol. Give them some kind of key.
+  async function fetchSaved(){
+      // console.log('fetching saved content');
+      const Data={
+        user: creds[0]
+      }
+      const otherParam={
+        mode: 'cors',
+        credentials: 'same-origin',
+        //headers:{
+        //  "content-type":"application/json; charset=UTF-8"
+        //},
+        body: JSON.stringify(Data),
+        method: "POST"
+      };
+      const response = await fetch("https://10.0.0.5:8000/saved/",otherParam)
+      const content = await response.json();
+      //console.log(content)
+      var newSaved = new Set();
+      var newIDs = content.result.split(",")
+      for(var i = 0; i < newIDs.length; i++){
+        newSaved.add(parseInt(newIDs[i]))
+      }
+      setSavedIds(newSaved)
+  }
 
   // later on this will be somewhat tailored to the user, like what instagram does.
   async function fetchContentAll(amount){
     if(eTasks.length === 0 || amount > 0){
-      console.log('fetching explore content');
+      // console.log('fetching explore content');
       const Data={
         depth: amount
       }
@@ -162,7 +188,7 @@ function App() {
       const content = await response.json();
       var newTasks = eTasks
       for(var i = 0; i < content.length; i++){
-        await newTasks.push({reminder:false, ...content[i], id: i + eTasksBottom, group: 1});
+        await newTasks.push({reminder:false, ...content[i], localId: i + eTasksBottom, group: 1});
       }
       await setETasks(newTasks);
       await setETasksBottom(eTasksBottom + content.length)
@@ -171,7 +197,7 @@ function App() {
 
   async function fetchContentFollowing(amount){
     if(fTasks.length === 0 || amount > 0){
-      console.log('fetching follow content');
+      // console.log('fetching follow content');
       const Data={
         user: creds[0],
         depth: amount
@@ -192,7 +218,7 @@ function App() {
       if(content !== null){
         // console.log(content);
         for(var i = 0; i < content.length; i++){
-          newTasks.push({reminder:false, ...content[i], id: i + fTasksBottom, group: 0});
+          newTasks.push({reminder:false, ...content[i], localId: i + fTasksBottom, group: 0});
         }
         await setFTasks(newTasks);
         setFTasksBottom(fTasksBottom + content.length)
@@ -201,12 +227,41 @@ function App() {
     }
   }
 
+  async function setSaved(id){
+      // console.log('fetching saved content');
+      const Data={
+        user: creds[0],
+        id: id
+      }
+      const otherParam={
+        mode: 'cors',
+        credentials: 'same-origin',
+        //headers:{
+        //  "content-type":"application/json; charset=UTF-8"
+        //},
+        body: JSON.stringify(Data),
+        method: "POST"
+      };
+      const response = await fetch("https://10.0.0.5:8000/saved-set/",otherParam)
+      const content = await response.json();
+      // console.log(content)
+      var newSaved = new Set();
+      var newIDs = content.result.split(",")
+      for(var i = 0; i < newIDs.length; i++){
+        newSaved.add(parseInt(newIDs[i]))
+      }
+      setSavedIds(newSaved)
+  }
 
   useEffect(() => {
     // console.log("updated");
     if(fetchFollowContent){
       fetchContentFollowing(10);
       setfetchFollowContent(false);
+      if(savedIdsFetched){
+        fetchSaved();
+        setSavedIdsFetched(false)
+      }
     }
   });
 
@@ -228,7 +283,7 @@ function App() {
           {/* {loginTest && fetchContentFollowing(10) && setLoginTest(false)} */}
           <Header title={creds[0]} onAdd={() => setShowAddTask(!showAddTask)} showAddTask={showAddTask}/>
           {showAddTask && <AddTask onAdd={addTask}/>}
-          {(fTasks.length > 0 ? <Tasks tasks={fTasks} onDelete={deleteTask} onToggle={toggleReminder} onPostSelected={changeSelect}/>
+          {(fTasks.length > 0 ? <Tasks tasks={fTasks} onDelete={deleteTask} onToggle={toggleReminder} onPostSelected={changeSelect} saved={savedIds} onSave={setSaved}/>
           : 'No content to show!')}
         </div>}
         {page === 1 && <div className="explore">
@@ -237,7 +292,7 @@ function App() {
             <input type='text' placeholder='Search'/>
           </div>
           <input className='btn btn-block' type='submit' value='Search' />
-          {(eTasks.length > 0 ? <Tasks tasks={eTasks} onDelete={deleteTask} onToggle={toggleReminder} onPostSelected={changeSelect}/>
+          {(eTasks.length > 0 ? <Tasks tasks={eTasks} onDelete={deleteTask} onToggle={toggleReminder} onPostSelected={changeSelect} saved={savedIds} onSave={setSaved}/>
           : 'No Tasks to Show')}
         </div>}
         {page === 2 && <div className="groups">
@@ -254,7 +309,8 @@ function App() {
           </div>
           <div>
             <MyProfile select={profileStates[0]} creds={creds}/>
-            <Saved select={profileStates[2]} creds={creds} onPostSelected={changeSelect}/>
+            <Following select={profileStates[1]} username={creds[0]} saved={savedIds}/>
+            <Saved select={profileStates[2]} creds={creds} onPostSelected={changeSelect} saved={savedIds} onSave={setSaved}/>
           </div>
         </div>}
         <div className="taskbar">

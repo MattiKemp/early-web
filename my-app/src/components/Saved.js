@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Task from './Task'
 
 
-const Saved = ({ creds , onPostSelected, select }) => {
+const Saved = ({ creds , onPostSelected, select, saved, onSave }) => {
     // idk if we should save this info here or in app.js,
     // if we save it in app.js then we don't have to worry about 
     // making unnecessary calls to the server if the data hasn't changed.
@@ -13,7 +13,7 @@ const Saved = ({ creds , onPostSelected, select }) => {
 
     async function fetchContentSaved(amount){
         if(savedTasks.length === 0 || amount > 0){
-          console.log('fetching saved content');
+          // console.log('fetching saved content');
           const Data={
             user: creds[0],
             depth: amount
@@ -34,7 +34,7 @@ const Saved = ({ creds , onPostSelected, select }) => {
           if(content !== null){
             // console.log(content);
             for(var i = 0; i < content.length; i++){
-              newTasks.push({reminder:false, ...content[i], id: i + savedTasksBottom, group: 0});
+              newTasks.push({reminder:false, ...content[i], localId: i + savedTasksBottom, group: 0});
             }
             await setSavedTasks(newTasks);
             setSavedTasksBottom(savedTasksBottom + content.length)
@@ -54,7 +54,7 @@ const Saved = ({ creds , onPostSelected, select }) => {
         <div className="saved-content">
             {select && <div>
                 {savedTasks.map((task) => (
-                    <Task key={task.id} task={task} onPostSelected={onPostSelected}/>
+                    <Task key={task.localId} task={task} onPostSelected={onPostSelected} saved={saved} onSave={onSave}/>
                 ))}
             </div>}
         </div>

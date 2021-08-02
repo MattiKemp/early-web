@@ -9,7 +9,6 @@ const MyProfile = ({ onAdd, url, info, select, creds}) => {
     const [prevValues, setPrevValues] = useState(['','',''])
     const [fetchProfileContent, setfetchProfileContent] = useState(true)
 
-
     const onSubmit = (e) => {
         e.preventDefault()
         setEdit(!edit)
@@ -29,7 +28,7 @@ const MyProfile = ({ onAdd, url, info, select, creds}) => {
 
     async function fetchContentProfile(){
         if(true){
-          console.log('fetching saved content');
+        //   console.log('fetching my profile content');
           const Data={
             user: creds[0]
           }
