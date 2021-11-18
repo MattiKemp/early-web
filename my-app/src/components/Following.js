@@ -35,7 +35,8 @@ const Following = ({ username, select }) => {
             body: JSON.stringify(Data),
             method: "POST"
           };
-          const response = await fetch("https://10.0.0.5:8000/content-profile-following/",otherParam)
+          console.log('fetchFollowingProfiles called');
+          const response = await fetch("https://workoutdev.org:8000/content-profile-following/",otherParam)
           const content = await response.json();
           var newProfiles = followingProfiles
           if(content !== null){

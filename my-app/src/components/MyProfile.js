@@ -48,11 +48,12 @@ const MyProfile = ({ onAdd, url, info, select, creds}) => {
             body: JSON.stringify(Data),
             method: "POST"
           };
-          const response = await fetch("https://10.0.0.5:8000/content-profile/",otherParam)
+          console.log('fetchContentProfile called');
+          const response = await fetch("https://workoutdev.org:8000/content-profile/",otherParam)
           const content = await response.json();
           if(content !== null){
             // console.log(content);
-            setPicture("https://10.0.0.5:8001/media/images/" + content.picture)
+            setPicture("https://workoutdev.org:8001/media/images/" + content.picture)
             setFirst(content.first)
             setLast(content.last)
           }

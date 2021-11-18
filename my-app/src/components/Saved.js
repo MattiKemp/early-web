@@ -36,7 +36,7 @@ const Saved = ({ creds , onPostSelected, select, saved, onSave }) => {
             body: JSON.stringify(Data),
             method: "POST"
           };
-          const response = await fetch("https://10.0.0.5:8000/content-saved/",otherParam)
+          const response = await fetch("https://workoutdev.org:8000/content-saved/",otherParam)
           const content = await response.json();
           var newPosts = savedPosts
           if(content !== null){

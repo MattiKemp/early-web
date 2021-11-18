@@ -104,13 +104,14 @@ function App() {
     const otherParam={
       mode: 'cors',
       credentials: 'same-origin',
-      //headers:{
-      //  "content-type":"application/json; charset=UTF-8"
-      //},
+      // headers:{
+      //   "content-type":"application/json;",
+      // },
       body: JSON.stringify(Data),
       method: "POST"
     };
-    const response = await fetch("https://10.0.0.5:8000/login/",otherParam)
+    console.log("signin called");
+    const response = await fetch("https://workoutdev.org:8000/login/",otherParam)
     const content = await response.json();
     if(content.valid === "YES"){
       console.log("welcome!");
@@ -147,7 +148,7 @@ function App() {
       body: JSON.stringify(Data),
       method: "POST"
     };
-    const response = await fetch("https://10.0.0.5:8000/signup/",otherParam)
+    const response = await fetch("https://workoutdev.org:8000/signup/",otherParam)
     const content = await response.json();
     if(content.valid === "YES"){
       console.log("welcome!");
@@ -174,7 +175,8 @@ function App() {
         body: JSON.stringify(Data),
         method: "POST"
       };
-      const response = await fetch("https://10.0.0.5:8000/saved/",otherParam)
+      console.log('fetchSaved called');
+      const response = await fetch("https://workoutdev.org:8000/saved/",otherParam)
       const content = await response.json();
       var newSaved = new Set();
       var newIDs = content.result.split(",")
@@ -201,8 +203,10 @@ function App() {
         body: JSON.stringify(Data),
         method: "POST"
       };
-      const response = await fetch("https://10.0.0.5:8000/content-all/",otherParam)
+      console.log('fetchContentAll called');
+      const response = await fetch("https://workoutdev.org:8000/content-all/",otherParam)
       const content = await response.json();
+      // console.log(content)
       var newPosts = ePosts
       for(var i = 0; i < content.length; i++){
         await newPosts.push({reminder:false, ...content[i], localId: i + ePostsBottom, group: 1});
@@ -229,7 +233,8 @@ function App() {
         body: JSON.stringify(Data),
         method: "POST"
       };
-      const response = await fetch("https://10.0.0.5:8000/content-following/",otherParam)
+      console.log('fetchContentFollowing called');
+      const response = await fetch("https://workoutdev.org:8000/content-following/",otherParam)
       const content = await response.json();
       var newPosts = fPosts
       if(content !== null){
@@ -258,7 +263,8 @@ function App() {
         body: JSON.stringify(Data),
         method: "POST"
       };
-      const response = await fetch("https://10.0.0.5:8000/saved-set/",otherParam)
+      console.log('setSaved called');
+      const response = await fetch("https://workoutdev.org:8000/saved-set/",otherParam)
       const content = await response.json();
       var newSaved = new Set();
       var newIDs = content.result.split(",")
