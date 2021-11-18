@@ -1,7 +1,8 @@
-# early-web
+# early web development
 
 How to run:
-1. install
-2. cd my-app
-3. npm start
-4. $$$
+1. clone repo
+2. cd website or cd api-tester
+3. npm install
+4. npm start or npm test
+5. $$$
