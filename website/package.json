@@ -1,0 +1,43 @@
+{
+  "name": "my-app",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@streamroot/hlsjs-dna-wrapper": "^1.0.99",
+    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/react": "^11.2.7",
+    "@testing-library/user-event": "^12.8.3",
+    "hls.js": "^1.0.7",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-hls-player": "^3.0.7",
+    "react-image": "^4.0.3",
+    "react-scripts": "4.0.3",
+    "web-vitals": "^1.1.2",
+    "ws": "^7.5.1"
+  },
+  "scripts": {
+    "start": "HTTPS=true SSL_CRT_FILE=./cert/certificate.crt SSL_KEY_FILE=./cert/private.key react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
