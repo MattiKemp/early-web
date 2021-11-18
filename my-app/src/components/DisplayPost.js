@@ -4,6 +4,7 @@ import Button from './Button'
 import ReactDOM from 'react-dom';
 import StreamVid from './StreamVid'
 import Image from './Image'
+import Profile from './Profile'
 
 // Component for displaying the content within a post
 // Properties:
@@ -43,7 +44,7 @@ const DisplayPost = ({ content, back, select }) => {
                     newElements.push(vidElement)
                 }
                 else if(lines[i].charAt(1)==="i"){
-                    const imgElement= <Image source={'https://10.0.0.5:8001/media/images/' + lines[i].substr(3,lines[i].length-6)} />;
+                    const imgElement= <Image source={'https://workoutdev.org:8001/media/images/' + lines[i].substr(3,lines[i].length-6)} />;
                     newElements.push(imgElement)
                 }
             }
@@ -94,6 +95,7 @@ const DisplayPost = ({ content, back, select }) => {
         <div>
             {select && <div className="post-content">
                 <Button color='green' text={"back"} onClick={() => back(false)}/>
+                <Profile profile={content.profile}/>
             </div>}
         </div>
     )

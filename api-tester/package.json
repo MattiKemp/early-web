@@ -1,25 +1,22 @@
 {
-  "name": "my-app",
+  "name": "api-tester",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@streamroot/hlsjs-dna-wrapper": "^1.0.99",
-    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/jest-dom": "^5.15.0",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
-    "hls.js": "^1.0.7",
+    "node_extra_ca_certs_mozilla_bundle": "^1.0.4",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-hls-player": "^3.0.7",
-    "react-image": "^4.0.3",
     "react-scripts": "4.0.3",
-    "web-vitals": "^1.1.2",
-    "ws": "^7.5.1"
+    "ssl-root-cas": "^1.3.1",
+    "web-vitals": "^1.1.2"
   },
   "scripts": {
     "start": "HTTPS=true SSL_CRT_FILE=./cert/certificate.crt SSL_KEY_FILE=./cert/private.key react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "HTTPS=true SSL_CRT_FILE=./cert/certificate.crt SSL_KEY_FILE=./cert/private.key NODE_EXTRA_CA_CERTS=node_modules/node_extra_ca_certs_mozilla_bundle/ca_bundle/ca_intermediate_root_bundle.pem react-scripts test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -39,5 +36,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "devDependencies": {}
 }

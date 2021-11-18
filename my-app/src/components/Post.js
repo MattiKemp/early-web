@@ -18,7 +18,7 @@ const Post = ({ post, onDelete, onToggle, onPostSelected, saved, onSave }) => {
         <div className={`task ${post.reminder ? 'reminder' : ''}`} onDoubleClick={() => onPostSelected(post)}>
             <h3>{post.title} <FaTimes style={{color: 'red', cursor: 'pointer'}} /></h3>
             <p>{post.owner}</p>
-            <Image source={'https://10.0.0.5:8001/media/images/' + post.thumbnail}/>
+            <Image source={'https://workoutdev.org:8001/media/images/' + post.thumbnail}/>
             <p>views: {post.views}</p>
             {<Button text={`${saved.has(post.id) ? 'unsave' : 'save'}`} onClick={() => onSave(post.id)}></Button>}
         </div>
