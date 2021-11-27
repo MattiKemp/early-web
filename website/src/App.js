@@ -9,6 +9,8 @@ import MyProfile from './components/MyProfile'
 import DisplayPost from './components/DisplayPost'
 import Saved from './components/Saved'
 import Following from './components/Following'
+import Groups from './components/Groups'
+import DisplayGroup from './components/DisplayGroup'
 
 function App() {
   // credentials for the user
@@ -40,6 +42,14 @@ function App() {
   const [savedIds, setSavedIds] = useState(new Set())
   // whether the user saved posts ids should be fetched
   const [savedIdsFetched, setSavedIdsFetched] = useState(true)
+  // groups (WIP)
+  const [groups, setGroups] = useState([])
+
+  const [groupsBottom, setGroupsBottom] = useState(0)
+
+  const [groupSelected, setGroupSelected] = useState(false)
+
+  const [selectedGroup, setSelectedGroup] = useState({data:"", name:""})
 
   // Add Task, this is to add a new post, but isn't really setup or named properly.
   const addPost = (task, group) => {
@@ -86,6 +96,13 @@ function App() {
   const changeSelect = (postData) => {
     setSelectedPostContent(postData)
     setPostSelected(true)
+  }
+
+  // function to view a selected posts content.
+  // Takes post data of selected post.
+  const changeGroupSelect = (group) => {
+    setSelectedGroup(group)
+    setGroupSelected(true)
   }
 
   // function to change the current displayed page. 
@@ -274,6 +291,44 @@ function App() {
       setSavedIds(newSaved)
   }
 
+  // function to get home page content.
+  // see backend comments for more info on specific endpoint details.
+  async function fetchGroups(){
+    if(groups.length === 0){
+      const Data={
+        user: creds[0]
+      }
+      const otherParam={
+        mode: 'cors',
+        credentials: 'same-origin',
+        //headers:{
+        //  "content-type":"application/json; charset=UTF-8"
+        //},
+        body: JSON.stringify(Data),
+        method: "POST"
+      };
+      console.log('fetchGroups called');
+      const response = await fetch("https://workoutdev.org:8000/get-groups/",otherParam)
+      const content = await response.json();
+      //console.log(content);
+      var newGroups = groups;
+      if(content !== null){
+        var keys = Object.keys(content);
+        //console.log(keys);
+        for(var i = 0; i < keys.length; i++){
+          //console.log(content[keys[i]]);
+          var messages = [];
+          for(var j = 1; j < content[keys[i]].length; j++){
+            messages.push({localId: j, ...content[keys[i]][j]});
+          }
+          newGroups.push({id: parseInt(keys[i]), messages:messages, localId: i + groupsBottom, name: content[keys[i]][0].name, picture: content[keys[i]][0].picture});
+        }
+        await setGroups(newGroups);
+        setGroupsBottom(groupsBottom + content.length)
+      }
+    }
+  }
+
   // if page update
   useEffect(() => {
     if(fetchFollowContent){
@@ -295,7 +350,7 @@ function App() {
 
   return (
     <div className="container">
-      {!postSelected && <div>
+      {!postSelected && !groupSelected && <div>
         {page < 3 && <div className="main-content">
         {page === -1 && <div className="login">
           <Login onSignIn={onSignIn} onSignUp={onSignUp}/>
@@ -317,7 +372,8 @@ function App() {
           : 'No content to Show!')}
         </div>}
         {page === 2 && <div className="groups">
-    
+          {(groups.length > 0 ? <Groups groups={groups} onGroupSelected={changeGroupSelect} />
+            : 'No content to show!')}
         </div>}
         </div>}
         {page === 3 && <div className="user">
@@ -337,12 +393,13 @@ function App() {
         <div className="taskbar">
           {page > -1 && <TaskbarButton text={"Home"} id={0} onClick={changePage} contentLoad={() => {}}/>}
           {page > -1 && <TaskbarButton text={"Explore"} id={1} onClick={changePage} contentLoad={fetchContentAll}/>}
-          {page > -1 && <TaskbarButton text={"Groups"} id={2} onClick={changePage} contentLoad={()=>{}}/>}
+          {page > -1 && <TaskbarButton text={"Groups"} id={2} onClick={changePage} contentLoad={fetchGroups}/>}
           {page > -1 && <TaskbarButton text={"Me"} id={3} onClick={changePage} contentLoad={()=>{}}/>}
         </div>
       </div>}
-      <div>
+      <div className="main-content">
         <DisplayPost content={selectedPostContent} back={setPostSelected} select={postSelected}/>
+        <DisplayGroup messages={selectedGroup} back={setGroupSelected} select={groupSelected}/>
       </div>
     </div>
   );
