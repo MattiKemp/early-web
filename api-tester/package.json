@@ -14,7 +14,7 @@
     "web-vitals": "^1.1.2"
   },
   "scripts": {
-    "start": "HTTPS=true SSL_CRT_FILE=./cert/certificate.crt SSL_KEY_FILE=./cert/private.key react-scripts start",
+    "start": "HTTPS=true SSL_CRT_FILE=./cert/certificate.crt SSL_KEY_FILE=./cert/private.key PORT=3001 react-scripts start",
     "build": "react-scripts build",
     "test": "HTTPS=true SSL_CRT_FILE=./cert/certificate.crt SSL_KEY_FILE=./cert/private.key NODE_EXTRA_CA_CERTS=node_modules/node_extra_ca_certs_mozilla_bundle/ca_bundle/ca_intermediate_root_bundle.pem react-scripts test",
     "eject": "react-scripts eject"
