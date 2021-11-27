@@ -1,11 +1,13 @@
 import logo from './logo.svg';
 import './App.css';
-import Graph from './components/Graph.test'
+import Graph from './components/Graph'
+import Content from './components/Content'
 
 function App() {
   return (
     <div className="container">
-      <Graph/>
+      {/* <Graph/> */}
+      <Content/>
     </div>
   );
 }
